@@ -1,5 +1,8 @@
 const { products, seller, category, buyer } = require("../models");
 
+// TODO: Add authentication - jsonwebtoken, bcryptjs
+// TODO: Create AuthToken Type for authentication
+
 module.exports.createProduct = async (parent, args) => {
   try {
     const { name, price, sellerId, categoryId } = args;
