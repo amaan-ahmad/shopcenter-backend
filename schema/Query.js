@@ -6,9 +6,12 @@ const {
 } = require("graphql");
 
 const ProductType = require("./types/ProductType");
+const BuyerType = require("./types/BuyerType");
+
 const {
   getAllProducts,
   getProductById,
+  getBuyer,
 } = require("../resolvers/QueryResolver");
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -25,6 +28,15 @@ const RootQuery = new GraphQLObjectType({
     all_products: {
       type: new GraphQLList(ProductType),
       resolve: getAllProducts,
+    },
+    buyerByID: {
+      type: BuyerType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID),
+        },
+      },
+      resolve: getBuyer,
     },
   },
 });
