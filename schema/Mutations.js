@@ -6,10 +6,11 @@ const {
   GraphQLNonNull,
 } = require("graphql");
 
-const { products, seller, category } = require("../models");
+const { products, seller, category, buyer } = require("../models");
 const CategoryType = require("./types/CategoryType");
 const ProductType = require("./types/ProductType");
 const SellerType = require("./types/SellerType");
+const BuyerType = require("./types/BuyerType");
 
 const Mutations = new GraphQLObjectType({
   name: "mutations",
@@ -88,6 +89,36 @@ const Mutations = new GraphQLObjectType({
             name,
           }).save();
           return newCategory;
+        } catch (error) {
+          return error;
+        }
+      },
+    },
+
+    buyer: {
+      type: BuyerType,
+      args: {
+        name: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+        email: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+        password: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+        id: {
+          type: GraphQLID,
+        },
+      },
+      async resolve(parent, args) {
+        try {
+          const { name, email, password } = args;
+          return await new buyer({
+            name,
+            email,
+            password,
+          }).save();
         } catch (error) {
           return error;
         }
