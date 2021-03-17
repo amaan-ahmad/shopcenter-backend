@@ -17,6 +17,10 @@ const SellerSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  password: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = model("seller", SellerSchema);

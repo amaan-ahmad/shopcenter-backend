@@ -31,9 +31,6 @@ const Mutations = new GraphQLObjectType({
         price: {
           type: new GraphQLNonNull(GraphQLFloat),
         },
-        sellerId: {
-          type: new GraphQLNonNull(GraphQLID),
-        },
         categoryId: {
           type: new GraphQLNonNull(GraphQLID),
         },
@@ -41,8 +38,8 @@ const Mutations = new GraphQLObjectType({
       resolve: createProduct,
     },
 
-    seller: {
-      type: SellerType,
+    sellerSignup: {
+      type: AuthTokenType,
       args: {
         name: {
           type: new GraphQLNonNull(GraphQLString),
@@ -51,6 +48,9 @@ const Mutations = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLString),
         },
         mobile_no: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+        password: {
           type: new GraphQLNonNull(GraphQLString),
         },
       },

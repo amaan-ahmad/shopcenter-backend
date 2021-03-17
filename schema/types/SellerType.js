@@ -3,6 +3,7 @@ const {
   GraphQLString,
   GraphQLBoolean,
   GraphQLList,
+  GraphQLID,
 } = require("graphql");
 
 const { products } = require("../../models");
@@ -10,6 +11,9 @@ const { products } = require("../../models");
 const SellerType = new GraphQLObjectType({
   name: "Seller",
   fields: () => ({
+    id: {
+      type: GraphQLID,
+    },
     name: {
       type: GraphQLString,
     },
@@ -17,6 +21,9 @@ const SellerType = new GraphQLObjectType({
       type: GraphQLBoolean,
     },
     mobile_no: {
+      type: GraphQLString,
+    },
+    password: {
       type: GraphQLString,
     },
     products: {

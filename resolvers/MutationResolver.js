@@ -1,10 +1,16 @@
 const { products, seller, category, buyer } = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const getPayload = require("../utils/auth");
 
-module.exports.createProduct = async (parent, args) => {
+module.exports.createProduct = async (parent, args, context) => {
   try {
-    const { name, price, sellerId, categoryId } = args;
+    const { name, price, categoryId } = args;
+    const payload = await getPayload(context);
+    if (!(payload && payload.id)) {
+      throw new Error("Payload not found.");
+    }
+    const sellerId = payload.id;
     const newProduct = await new products({
       name,
       price,
@@ -19,19 +25,29 @@ module.exports.createProduct = async (parent, args) => {
 
 module.exports.createSeller = async (parent, args) => {
   try {
-    const { name, email, mobile_no } = args;
+    const { name, email, mobile_no, password } = args;
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newSeller = await new seller({
       name,
       email,
       mobile_no,
+      password: hashedPassword,
     }).save();
-    return newSeller;
+
+    const token = jwt.sign(
+      { id: newSeller._id, role: "SELLER" },
+      process.env.JWT_SECRET
+    );
+    return {
+      token,
+      userId: newSeller._id,
+    };
   } catch (error) {
     return error;
   }
 };
 
-module.exports.createCategory = async (parent, args) => {
+module.exports.createCategory = async (parent, args, context) => {
   try {
     const { name } = args;
     const newCategory = await new category({
