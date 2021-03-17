@@ -20,6 +20,9 @@ module.exports.getAllProducts = async (parent, args, context) => {
 module.exports.getBuyer = async (parent, args, context) => {
   try {
     const payload = await getPayload(context);
+    if (!(payload && payload.id)) {
+      throw new Error("Payload not found.");
+    }
     return await buyer.findById(payload.id).select("-password");
   } catch (error) {
     return error;
