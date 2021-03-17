@@ -52,7 +52,10 @@ module.exports.buyerSignup = async (parent, args) => {
       email,
       password: hashedPassword,
     }).save();
-    const token = jwt.sign({ id: newBuyer._id }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      { id: newBuyer._id, role: "BUYER" },
+      process.env.JWT_SECRET
+    );
     return {
       token,
       userId: newBuyer._id,
@@ -79,6 +82,7 @@ module.exports.buyerLogin = async (parent, args) => {
     const token = jwt.sign(
       {
         id: existingBuyer._id,
+        role: "BUYER",
       },
       process.env.JWT_SECRET
     );
