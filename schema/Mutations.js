@@ -10,11 +10,13 @@ const CategoryType = require("./types/CategoryType");
 const ProductType = require("./types/ProductType");
 const SellerType = require("./types/SellerType");
 const BuyerType = require("./types/BuyerType");
+const AuthTokenType = require("./types/AuthTokenType");
 const {
   createSeller,
-  createBuyer,
+  buyerSignup,
   createProduct,
   createCategory,
+  buyerLogin,
 } = require("../resolvers/MutationResolver");
 
 const Mutations = new GraphQLObjectType({
@@ -65,8 +67,8 @@ const Mutations = new GraphQLObjectType({
       resolve: createCategory,
     },
 
-    buyer: {
-      type: BuyerType,
+    buyerSignup: {
+      type: AuthTokenType,
       args: {
         name: {
           type: new GraphQLNonNull(GraphQLString),
@@ -81,7 +83,20 @@ const Mutations = new GraphQLObjectType({
           type: GraphQLID,
         },
       },
-      resolve: createBuyer,
+      resolve: buyerSignup,
+    },
+
+    buyerLogin: {
+      type: AuthTokenType,
+      args: {
+        email: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+        password: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+      },
+      resolve: buyerLogin,
     },
   },
 });
