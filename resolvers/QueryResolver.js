@@ -1,4 +1,5 @@
 const { products, buyer } = require("../models");
+const getPayload = require("../utils/auth");
 
 module.exports.getProductById = async (parent, args) => {
   try {
@@ -18,7 +19,8 @@ module.exports.getAllProducts = async (parent, args, context) => {
 
 module.exports.getBuyer = async (parent, args, context) => {
   try {
-    return await buyer.findById(args.id).select("-password");
+    const payload = await getPayload(context);
+    return await buyer.findById(payload.id).select("-password");
   } catch (error) {
     return error;
   }
