@@ -23,7 +23,7 @@ module.exports.createProduct = async (parent, args, context) => {
   }
 };
 
-module.exports.createSeller = async (parent, args) => {
+module.exports.sellerSignup = async (parent, args) => {
   try {
     const { name, email, mobile_no, password } = args;
     const hashedPassword = await bcrypt.hash(password, 10);

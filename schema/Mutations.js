@@ -8,11 +8,9 @@ const {
 
 const CategoryType = require("./types/CategoryType");
 const ProductType = require("./types/ProductType");
-const SellerType = require("./types/SellerType");
-const BuyerType = require("./types/BuyerType");
 const AuthTokenType = require("./types/AuthTokenType");
 const {
-  createSeller,
+  sellerSignup,
   buyerSignup,
   createProduct,
   createCategory,
@@ -54,7 +52,7 @@ const Mutations = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLString),
         },
       },
-      resolve: createSeller,
+      resolve: sellerSignup,
     },
 
     category: {
