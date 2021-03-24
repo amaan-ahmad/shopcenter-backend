@@ -47,6 +47,38 @@ module.exports.createSeller = async (parent, args) => {
   }
 };
 
+module.exports.sellerLogin = async (parent, args) => {
+  try {
+    const { email, password } = args;
+
+    const existingSeller = await seller.find({ email });
+
+    if (!existingSeller) {
+      throw new Error("No such user found.");
+    }
+
+    const isValidPassword = await bcrypt.compare(
+      password,
+      existingSeller.password
+    );
+
+    if (!isValidPassword) {
+      throw new Error("Invalid credentials.");
+    }
+
+    const token = jwt.sign(
+      { id: existingSeller._id, role: "SELLER" },
+      process.env.JWT_SECRET
+    );
+    return {
+      token,
+      userId: existingSeller._id,
+    };
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports.createCategory = async (parent, args, context) => {
   try {
     const { name } = args;
