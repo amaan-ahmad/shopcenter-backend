@@ -23,7 +23,7 @@ const ProductType = new GraphQLObjectType({
       type: SellerType,
       async resolve(parent, args, context, info) {
         try {
-          return await seller.findById(parent.sellerId);
+          return await seller.findById(parent.sellerId).select("-password");
         } catch (error) {
           return error;
         }
