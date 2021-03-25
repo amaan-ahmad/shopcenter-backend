@@ -15,6 +15,7 @@ const {
   createProduct,
   createCategory,
   buyerLogin,
+  sellerLogin,
 } = require("../resolvers/MutationResolver");
 
 const Mutations = new GraphQLObjectType({
@@ -95,6 +96,19 @@ const Mutations = new GraphQLObjectType({
         },
       },
       resolve: buyerLogin,
+    },
+
+    sellerLogin: {
+      type: AuthTokenType,
+      args: {
+        email: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+        password: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+      },
+      resolve: sellerLogin,
     },
   },
 });

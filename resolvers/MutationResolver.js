@@ -50,8 +50,7 @@ module.exports.sellerSignup = async (parent, args) => {
 module.exports.sellerLogin = async (parent, args) => {
   try {
     const { email, password } = args;
-
-    const existingSeller = await seller.find({ email });
+    const existingSeller = await seller.findOne({ email });
 
     if (!existingSeller) {
       throw new Error("No such user found.");
