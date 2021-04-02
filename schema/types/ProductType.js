@@ -19,6 +19,12 @@ const ProductType = new GraphQLObjectType({
     price: {
       type: GraphQLFloat,
     },
+    photo: {
+      type: GraphQLString,
+    },
+    slug: {
+      type: GraphQLString,
+    },
     seller: {
       type: SellerType,
       async resolve(parent, args, context, info) {

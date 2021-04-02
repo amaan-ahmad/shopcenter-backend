@@ -33,6 +33,9 @@ const Mutations = new GraphQLObjectType({
         categoryId: {
           type: new GraphQLNonNull(GraphQLID),
         },
+        photo: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
       },
       resolve: createProduct,
     },

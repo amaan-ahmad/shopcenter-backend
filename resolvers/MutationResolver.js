@@ -2,10 +2,11 @@ const { products, seller, category, buyer } = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const getPayload = require("../utils/auth");
+const { uploadImage } = require("../utils/upload");
 
 module.exports.createProduct = async (parent, args, context) => {
   try {
-    const { name, price, categoryId } = args;
+    const { name, price, categoryId, photo } = args;
     const payload = await getPayload(context);
     if (!(payload && payload.id)) {
       throw new Error("Payload not found.");
@@ -16,6 +17,7 @@ module.exports.createProduct = async (parent, args, context) => {
       price,
       sellerId,
       categoryId,
+      photo,
     }).save();
     return newProduct;
   } catch (error) {

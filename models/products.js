@@ -24,6 +24,10 @@ const ProductSchema = new Schema({
       unique: true,
     },
   },
+  photo: {
+    type: String,
+    required: true,
+  },
 });
 
 ProductSchema.plugin(
