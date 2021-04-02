@@ -29,13 +29,8 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(ProductType),
       resolve: getAllProducts,
     },
-    buyerByID: {
+    buyer: {
       type: BuyerType,
-      args: {
-        id: {
-          type: new GraphQLNonNull(GraphQLID),
-        },
-      },
       resolve: getBuyer,
     },
   },
