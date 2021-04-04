@@ -144,3 +144,36 @@ module.exports.buyerLogin = async (parent, args) => {
     return error;
   }
 };
+
+module.exports.addToCart = async (parent, args, context) => {
+  try {
+    const payload = await getPayload(context);
+    if (!(payload && payload.id)) {
+      throw new Error("Payload not found.");
+    }
+    let resp = await buyer.updateOne(
+      { _id: payload.id },
+      {
+        $push: {
+          cart: {
+            productId: args.id,
+          },
+        },
+      },
+      function (error, success) {
+        if (error) {
+          console.error(error);
+          throw new Error(error);
+        } else {
+          console.log(success);
+          return success;
+        }
+      }
+    );
+    if (resp.ok) {
+      return await products.findById(args.id);
+    }
+  } catch (error) {
+    return error;
+  }
+};

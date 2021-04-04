@@ -16,6 +16,7 @@ const {
   createCategory,
   buyerLogin,
   sellerLogin,
+  addToCart,
 } = require("../resolvers/MutationResolver");
 
 const Mutations = new GraphQLObjectType({
@@ -112,6 +113,16 @@ const Mutations = new GraphQLObjectType({
         },
       },
       resolve: sellerLogin,
+    },
+
+    addToCart: {
+      type: ProductType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID),
+        },
+      },
+      resolve: addToCart,
     },
   },
 });
