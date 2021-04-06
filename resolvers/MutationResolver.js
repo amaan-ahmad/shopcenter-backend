@@ -191,7 +191,7 @@ module.exports.addToCart = async (parent, args, context) => {
     if (resp.ok) {
       return {
         product: await products.findById(args.id),
-        qty: cartItem ? cartItem.qty + args.qty : 1,
+        qty: alreadyExists ? cartItem.qty + args.qty : 1,
       };
     }
   } catch (error) {
