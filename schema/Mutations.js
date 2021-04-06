@@ -4,6 +4,7 @@ const {
   GraphQLFloat,
   GraphQLID,
   GraphQLNonNull,
+  GraphQLInt,
 } = require("graphql");
 
 const CategoryType = require("./types/CategoryType");
@@ -18,6 +19,7 @@ const {
   sellerLogin,
   addToCart,
 } = require("../resolvers/MutationResolver");
+const CartItemType = require("./types/CartItemType");
 
 const Mutations = new GraphQLObjectType({
   name: "mutations",
@@ -116,10 +118,13 @@ const Mutations = new GraphQLObjectType({
     },
 
     addToCart: {
-      type: ProductType,
+      type: CartItemType,
       args: {
         id: {
           type: new GraphQLNonNull(GraphQLID),
+        },
+        qty: {
+          type: new GraphQLNonNull(GraphQLInt),
         },
       },
       resolve: addToCart,
