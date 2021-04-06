@@ -8,6 +8,7 @@ const {
 
 const ProductType = require("./types/ProductType");
 const BuyerType = require("./types/BuyerType");
+const CartItemType = require("./types/CartItemType");
 
 const {
   getAllProducts,
@@ -39,7 +40,7 @@ const RootQuery = new GraphQLObjectType({
       resolve: getBuyer,
     },
     cart: {
-      type: new GraphQLList(ProductType),
+      type: new GraphQLList(CartItemType),
       resolve: getCartItems,
     },
   },
