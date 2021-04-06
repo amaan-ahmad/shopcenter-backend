@@ -1,5 +1,7 @@
 const { products, buyer } = require("../models");
 const getPayload = require("../utils/auth");
+const _ = require("lodash");
+
 module.exports.getProductById = async (parent, args) => {
   try {
     if (args.id) {
@@ -47,21 +49,41 @@ module.exports.getCartItems = async (parent, args, context) => {
     cart.forEach((i) => {
       cartIDs.push(i.productId);
     });
-
-    return await products.find(
+    let data;
+    await products.find(
       {
         _id: {
           $in: cartIDs,
         },
       },
-      function (err, docs) {
+      function (err, productData) {
         if (err) {
           throw new Error(err);
         } else {
-          return docs;
+          // this array will contain CartItem type objects.
+          let result = [];
+          /** 
+          fetching qty of each product from database, by matching product._id and then preparing
+          result array filled with CartItem type objects.
+          */
+          productData.forEach((i) => {
+            // becarefull ! here productId and i._id both are typeof Object, that's why lodash works here
+
+            const { qty } = _.find(cart, {
+              productId: i._id,
+            });
+            result.push({
+              product: i,
+              qty,
+            });
+          });
+          data = result;
+          return result;
         }
       }
     );
+    // the array containing `CartItem` type objects
+    return data;
   } catch (error) {
     return error;
   }
