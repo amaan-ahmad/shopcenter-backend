@@ -18,6 +18,9 @@ const BuyerSchema = new Schema({
   cart: [
     {
       productId: { type: ObjectId, ref: "products" },
+      qty: {
+        type: Number,
+      },
     },
   ],
   wishlist: [
