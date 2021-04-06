@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const getPayload = require("../utils/auth");
 const { uploadImage } = require("../utils/upload");
+const _ = require("lodash");
+const { ObjectId } = require("mongoose").Types;
 
 module.exports.createProduct = async (parent, args, context) => {
   try {
@@ -151,27 +153,46 @@ module.exports.addToCart = async (parent, args, context) => {
     if (!(payload && payload.id)) {
       throw new Error("Payload not found.");
     }
-    let resp = await buyer.updateOne(
-      { _id: payload.id },
-      {
-        $push: {
-          cart: {
-            productId: args.id,
+    const { cart } = await buyer
+      .findById(payload.id)
+      .select("cart -_id")
+      .exec();
+
+    let resp;
+
+    /**
+     *  looking if cartItem is already present then increament the qty.
+     *  else add a new cartItem to cart[] in DB.
+     */
+    let cartItem = _.find(cart, { productId: ObjectId(args.id) });
+    const alreadyExists = cartItem !== undefined;
+    if (alreadyExists) {
+      resp = await buyer.updateOne(
+        { _id: payload.id, "cart.productId": ObjectId(args.id) },
+        {
+          $inc: {
+            "cart.$.qty": args.qty,
           },
-        },
-      },
-      function (error, success) {
-        if (error) {
-          console.error(error);
-          throw new Error(error);
-        } else {
-          console.log(success);
-          return success;
         }
-      }
-    );
+      );
+    } else {
+      resp = await buyer.updateOne(
+        { _id: payload.id },
+        {
+          $addToSet: {
+            cart: {
+              productId: ObjectId(args.id),
+              qty: 1,
+            },
+          },
+        }
+      );
+    }
     if (resp.ok) {
-      return await products.findById(args.id);
+      return {
+        product: await products.findById(args.id),
+        qty: cartItem ? cartItem.qty + args.qty : 1,
+      };
     }
   } catch (error) {
     return error;
