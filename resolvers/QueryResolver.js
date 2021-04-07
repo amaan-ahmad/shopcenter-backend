@@ -88,3 +88,29 @@ module.exports.getCartItems = async (parent, args, context) => {
     return error;
   }
 };
+
+module.exports.getWishList = async (parent, args, context) => {
+  try {
+    const payload = await getPayload(context);
+    if (!(payload && payload.id)) {
+      throw new Error("Payload not found.");
+    }
+
+    const { wishlist } = await buyer
+      .findById(payload.id)
+      .select("wishlist -_id")
+      .exec();
+    const wishlistProducts = [];
+    wishlist.forEach((item) => {
+      wishlistProducts.push(item.productId);
+    });
+
+    return await products.find({
+      _id: {
+        $in: wishlistProducts,
+      },
+    });
+  } catch (error) {
+    return error;
+  }
+};

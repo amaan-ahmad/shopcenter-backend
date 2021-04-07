@@ -3,7 +3,6 @@ const {
   GraphQLID,
   GraphQLString,
   GraphQLList,
-  GraphQLNonNull,
 } = require("graphql");
 
 const ProductType = require("./types/ProductType");
@@ -15,6 +14,7 @@ const {
   getProductById,
   getBuyer,
   getCartItems,
+  getWishList,
 } = require("../resolvers/QueryResolver");
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -42,6 +42,10 @@ const RootQuery = new GraphQLObjectType({
     cart: {
       type: new GraphQLList(CartItemType),
       resolve: getCartItems,
+    },
+    wishlist: {
+      type: new GraphQLList(ProductType),
+      resolve: getWishList,
     },
   },
 });

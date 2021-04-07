@@ -227,3 +227,59 @@ module.exports.updateCart = async (parent, args, context) => {
     return error;
   }
 };
+
+module.exports.saveWishlist = async (parent, args, context) => {
+  try {
+    const payload = await getPayload(context);
+    if (!(payload && payload.id)) {
+      throw new Error("Payload not found.");
+    }
+
+    const resp = await buyer.updateOne(
+      { _id: payload.id },
+      {
+        $addToSet: {
+          wishlist: {
+            productId: ObjectId(args.id),
+          },
+        },
+      }
+    );
+
+    if (resp.ok) {
+      return await products.findById(args.id);
+    } else {
+      throw new Error("Unable to save to wishlist.");
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
+module.exports.unSaveWishlist = async (parent, args, context) => {
+  try {
+    const payload = await getPayload(context);
+    if (!(payload && payload.id)) {
+      throw new Error("Payload not found.");
+    }
+
+    let resp = await buyer.updateOne(
+      { _id: payload.id },
+      {
+        $pull: {
+          wishlist: {
+            productId: ObjectId(args.id),
+          },
+        },
+      }
+    );
+
+    if (resp.ok) {
+      return await products.findById(args.id);
+    } else {
+      throw new Error("Unable to unsave from wishlist.");
+    }
+  } catch (error) {
+    return error;
+  }
+};

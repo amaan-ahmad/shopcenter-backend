@@ -18,6 +18,8 @@ const {
   buyerLogin,
   sellerLogin,
   updateCart,
+  saveWishlist,
+  unSaveWishlist,
 } = require("../resolvers/MutationResolver");
 const CartItemType = require("./types/CartItemType");
 
@@ -128,6 +130,25 @@ const Mutations = new GraphQLObjectType({
         },
       },
       resolve: updateCart,
+    },
+    saveToWishlist: {
+      type: ProductType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID),
+        },
+      },
+      resolve: saveWishlist,
+    },
+
+    unSaveFromWishlist: {
+      type: ProductType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID),
+        },
+      },
+      resolve: unSaveWishlist,
     },
   },
 });
