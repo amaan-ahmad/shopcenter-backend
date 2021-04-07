@@ -147,7 +147,14 @@ module.exports.buyerLogin = async (parent, args) => {
   }
 };
 
-module.exports.addToCart = async (parent, args, context) => {
+/**
+ * args.qty < 0 => {decreases quantity}
+ * if quantity left is 1 and quantity is decreased then it removes the element from cart.
+ * args.qty > 0 => {increase quantity}
+ *
+ */
+
+module.exports.updateCart = async (parent, args, context) => {
   try {
     const payload = await getPayload(context);
     if (!(payload && payload.id)) {
@@ -167,14 +174,29 @@ module.exports.addToCart = async (parent, args, context) => {
     let cartItem = _.find(cart, { productId: ObjectId(args.id) });
     const alreadyExists = cartItem !== undefined;
     if (alreadyExists) {
-      resp = await buyer.updateOne(
-        { _id: payload.id, "cart.productId": ObjectId(args.id) },
-        {
-          $inc: {
-            "cart.$.qty": args.qty,
+      if (args.qty < 0 && cartItem.qty + args.qty <= 0) {
+        // remove the product completely from the cart[]
+        resp = await buyer.updateOne(
+          { _id: payload.id },
+          {
+            $pull: {
+              cart: {
+                productId: ObjectId(args.id),
+              },
+            },
           },
-        }
-      );
+          { new: true }
+        );
+      } else {
+        resp = await buyer.updateOne(
+          { _id: payload.id, "cart.productId": ObjectId(args.id) },
+          {
+            $inc: {
+              "cart.$.qty": args.qty,
+            },
+          }
+        );
+      }
     } else {
       resp = await buyer.updateOne(
         { _id: payload.id },
@@ -182,16 +204,23 @@ module.exports.addToCart = async (parent, args, context) => {
           $addToSet: {
             cart: {
               productId: ObjectId(args.id),
-              qty: 1,
+              qty: args.qty <= 0 ? 1 : args.qty,
             },
           },
         }
       );
     }
     if (resp.ok) {
+      const { cart } = await buyer.findOne({
+        _id: payload.id,
+      });
+      const updatedCartItem = _.find(cart, {
+        productId: ObjectId(args.id),
+      });
+      const qty = updatedCartItem ? updatedCartItem.qty : 0;
       return {
         product: await products.findById(args.id),
-        qty: alreadyExists ? cartItem.qty + args.qty : 1,
+        qty,
       };
     }
   } catch (error) {
