@@ -28,6 +28,30 @@ const BuyerSchema = new Schema({
       productId: { type: ObjectId, ref: "products" },
     },
   ],
+  address: [
+    {
+      line1: {
+        type: String,
+        default: "",
+      },
+      line2: {
+        type: String,
+        default: "",
+      },
+      state: {
+        type: String,
+        default: "",
+      },
+      city: {
+        type: String,
+        default: "",
+      },
+      zipcode: {
+        type: Number,
+        default: 0,
+      },
+    },
+  ],
 });
 
 module.exports = model("buyers", BuyerSchema);
