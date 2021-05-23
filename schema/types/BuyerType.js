@@ -73,9 +73,22 @@ const BuyerType = new GraphQLObjectType({
         }
       },
     },
+    address: {
+      type: new GraphQLList(AddressType),
+      async resolve(parent, args) {
+        try {
+          const { address } = await buyer.findById(parent.id).select("address");
+          console.log(address);
+          return address;
+        } catch (error) {
+          return error;
+        }
+      },
+    },
   }),
 });
 
 module.exports = BuyerType;
 
 const ProductType = require("./ProductType");
+const AddressType = require("./AddressType");
