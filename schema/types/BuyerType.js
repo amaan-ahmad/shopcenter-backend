@@ -78,7 +78,6 @@ const BuyerType = new GraphQLObjectType({
       async resolve(parent, args) {
         try {
           const { address } = await buyer.findById(parent.id).select("address");
-          console.log(address);
           return address;
         } catch (error) {
           return error;
